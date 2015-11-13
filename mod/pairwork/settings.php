@@ -29,9 +29,20 @@ require_once($CFG->dirroot.'/mod/pairwork/lib.php');
 
 if ($ADMIN->fulltree) {
 
+	$settings->add(new admin_setting_configcheckbox('mod_pairwork/enablereset',
+					get_string('enablereset', MOD_PAIRWORK_LANG),
+					get_string('enablereset_details', MOD_PAIRWORK_LANG),
+					0));
 
+	$settings->add(new admin_setting_configcheckbox('mod_pairwork/enablereports',
+					get_string('enablereports', MOD_PAIRWORK_LANG),
+					get_string('enablereports_details', MOD_PAIRWORK_LANG),
+					0));
 
-	  $settings->add(new admin_setting_configtext('mod_pairwork/someadminsetting',
-        get_string('someadminsetting', 'pairwork'), get_string('someadminsetting_details', MOD_PAIRWORK_LANG), 'default text', PARAM_TEXT));
+	$settings->add(new admin_setting_configtext('mod_pairwork/someadminsetting',
+					get_string('someadminsetting', MOD_PAIRWORK_LANG),
+					get_string('someadminsetting_details', MOD_PAIRWORK_LANG),
+					'default text',
+					PARAM_TEXT));
 
 }

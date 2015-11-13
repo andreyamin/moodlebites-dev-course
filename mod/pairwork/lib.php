@@ -659,6 +659,21 @@ function pairwork_pluginfile($course, $cm, $context, $filearea, array $args, $fo
  * @param cm_info $cm
  */
 function pairwork_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+
+    global $PAGE;
+
+    $enablereset = get_config(MOD_PAIRWORK_FRANKY,'enablereset');
+    $enablereports = get_config(MOD_PAIRWORK_FRANKY,'enablereports');
+
+    if ($enablereset == 1) {
+        $view_url = new moodle_url('/mod/pairwork/view.php',array('id'=>$cm->id));
+        $view_node = $navref->add(get_string('view'), $view_url);
+    }
+
+    if ($enablereports == 1) {
+        $report_url = new moodle_url('/mod/pairwork/reports.php',array('id'=>$cm->id));
+        $view_node = $navref->add(get_string('reports', MOD_PAIRWORK_LANG), $report_url);
+    }
 }
 
 /**
