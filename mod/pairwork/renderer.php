@@ -102,6 +102,69 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 		}
 		return $ret;
 	}
+
+	public function fetch_view_instructions(){
+
+		$html = $this->output->box_start();
+		$instructions = "Talk with your partner and choos a different rol each.</br>";
+		$instructions .= "One of you will bia a Partner A, and the other Partner B";
+		$html .= html_writer::div($instructions, MOD_PAIRWORK_CLASS . "_instructions");
+		$html .= $this->output->box_end();
+		return $html;
+
+	}
+
+	public function fetch_view_buttons(){
+
+		$a_url = new moodle_url('/mod/pairwork/activity.php', array('id'=>$this->page->cm->id, 'partnertype'=>'a'));
+		$b_url = new moodle_url('/mod/pairwork/activity.php', array('id'=>$this->page->cm->id, 'partnertype'=>'b'));
+		$html = $this->output->single_button($a_url, 'Partner A');
+		$html .= $this->output->single_button($b_url, 'Partner B');
+		return html_writer::div($html, MOD_PAIRWORK_CLASS . '_buttoncontainer');
+
+	}
+
+	public function fetch_activity_heading($moduleinstance, $displayopts){
+
+		$html = $this->output->heading($moduleinstance->name, 2, 'main');
+		$html .= $this->output->heading('Student ' . strtoupper($displayopts->partnertype), 3, 'main');
+		return $html;
+
+	}
+
+	public function fetch_activity_instructions($moduleinstance,$displayopts){
+
+		$html = $this->output->box_start();
+		$instructions = "Whatch the very short video below. ";
+		$instructions .= "Think about how to explain it to your partner in English. ";
+		$instructions .= "When you and your partner are ready, take turns describing your video. ";
+		$instructions .= "When your partner has described their video, you should try to repeat what you just heard. ";
+		$instructions .= "When you have both finisehd talking, you can see your partner's video.";
+		$html .= html_writer::div($instructions, MOD_PAIRWORK_CLASS . "_instructions");
+		$html .= $this->output->box_end();
+		return $html;
+	}
+
+	public function fetch_activity_resource($moduleinstance,$displayopts){
+
+		global $CFG;
+		//establish role
+		if($displayopts->partnertype=='a'){
+			$myrole = 'a';
+			$partnerrole = 'b';
+		} else {
+			$myrole = 'b';
+			$partnerrole = 'a';
+		}
+		//get mypicture
+		$mypicture = html_writer::img($CFG->wwwroot . '/mod/pairwork/resource/picture_' . $myrole . '.gif',
+										'my picture', array('class'=>MOD_PAIRWORK_CLASS . '_resourcecontainer'));
+		$mypicture = html_writer::div($mypicture, MOD_PAIRWORK_CLASS . '_resourcecontainer');
+		$html = $mypicture;
+
+		return $html;
+
+	}
   
 }
 

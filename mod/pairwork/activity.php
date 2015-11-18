@@ -32,7 +32,8 @@ require_once(dirname(__FILE__).'/lib.php');
 
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // pairwork instance ID - it should be named as the first character of the module
+$n  = optional_param('n', 0, PARAM_INT); // pairwork instance ID - it should be named as the first character of the module
+$partnertype  = optional_param('partnertype', 'a', PARAM_TEXT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('pairwork', $id, 0, false, MUST_EXIST);
@@ -46,13 +47,13 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
-$PAGE->set_url('/mod/pairwork/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/pairwork/activity.php', array('id' => $cm->id));
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 //Diverge logging logic at Moodle 2.7
 if($CFG->version<2014051200){
-	add_to_log($course->id, 'pairwork', 'view', "view.php?id={$cm->id}", $moduleinstance->name, $cm->id);
+	add_to_log($course->id, 'pairwork', 'view', "activity.php?id={$cm->id}", $moduleinstance->name, $cm->id);
 }else{
 	// Trigger module viewed event.
 	$event = \mod_pairwork\event\course_module_viewed::create(array(
@@ -132,12 +133,13 @@ if($moduleinstance->maxattempts > 0){
 	}
 }
 
-//This is specfic to our renderer
-//echo $renderer->show_something($someadminsetting);
-//echo $renderer->show_something($someinstancesetting);
+$displayopts = new stdClass();
+$displayopts->partnertype=$partnertype;
 
-echo $renderer->fetch_view_instructions();
-echo $renderer->fetch_view_buttons();
+echo $renderer->fetch_activity_heading($moduleinstance,$displayopts);
+echo $renderer->fetch_activity_instructions($moduleinstance,$displayopts);
+echo $renderer->fetch_activity_resource($moduleinstance,$displayopts);
+
 
 // Finish the page
 echo $renderer->footer();
