@@ -34,6 +34,7 @@ require_once(dirname(__FILE__).'/lib.php');
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT); // pairwork instance ID - it should be named as the first character of the module
 $partnertype  = optional_param('partnertype', 'a', PARAM_TEXT);
+$seepartnerpic = optional_param('seepartnerpic', 0, PARAM_INT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('pairwork', $id, 0, false, MUST_EXIST);
@@ -135,11 +136,12 @@ if($moduleinstance->maxattempts > 0){
 
 $displayopts = new stdClass();
 $displayopts->partnertype=$partnertype;
+$displayopts->seepartnerpic=$seepartnerpic;
 
 echo $renderer->fetch_activity_heading($moduleinstance,$displayopts);
 echo $renderer->fetch_activity_instructions($moduleinstance,$displayopts);
 echo $renderer->fetch_activity_resource($moduleinstance,$displayopts);
-
+echo $renderer->fetch_activity_opresource($moduleinstance,$displayopts);
 
 // Finish the page
 echo $renderer->footer();

@@ -165,6 +165,37 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 		return $html;
 
 	}
+
+	public function fetch_activity_opresource($moduleinstance,$displayopts){
+
+		global $CFG;
+
+		if($displayopts->seepartnerpic==0){
+
+			$url = new moodle_url('/mod/pairwork/activity.php', array('id'=>$this->page->cm->id, 
+									'partnertype'=>$displayopts->partnertype,
+									'seepartnerpic'=>'1'));
+			$html = $this->output->single_button($url, 'See partner pic');
+		} else {
+
+			if($displayopts->partnertype=='a'){
+				$partnerrole = 'b';
+				$myrole = 'a'; 
+			} else {
+				$partnerrole = 'a';
+				$myrole = 'b';
+			}
+
+			$partnerpic = html_writer::img($CFG->wwwroot . '/mod/pairwork/resource/picture_' . $partnerrole . '.gif',
+										'my picture', array('class'=>MOD_PAIRWORK_CLASS . '_resourcecontainer'));
+			$html = html_writer::div($partnerpic, MOD_PAIRWORK_CLASS . '_resourcecontainer');
+			$url = new moodle_url('/mod/pairwork/activity.php', array('id'=>$this->page->cm->id, 
+					'partnertype'=>$myrole,
+					'seepartnerpic'=>'0'));
+			$html .= $this->output->single_button($url, 'Hide partner pic');
+		}
+		return $html;
+	}
   
 }
 
