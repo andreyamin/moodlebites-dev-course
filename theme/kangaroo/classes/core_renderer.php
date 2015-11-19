@@ -65,3 +65,15 @@ class theme_kangaroo_core_renderer extends theme_bootstrapbase_core_renderer {
         return false;
     }
 }
+
+require_once($CFG->dirroot . '/mod/quiz/renderer.php');
+
+class theme_kangaroo_mod_quiz_renderer extends mod_quiz_renderer {
+
+    public function restart_preview_button($url) {
+        $button = new single_button($url, get_string('startnewpreview', 'quiz'));
+        $button->add_confirm_action('reallystartnewpreview','theme_kangaroo');
+        return $this->render($button);
+    }
+
+}

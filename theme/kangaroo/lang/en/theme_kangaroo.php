@@ -63,4 +63,4 @@ $string['pluginname'] = 'kangaroo';
 
 $string['region-side-post'] = 'Right';
 $string['region-side-pre'] = 'Left';
-
+$string['reallystartnewpreview'] = 'Do you really want to start a new preview?';
