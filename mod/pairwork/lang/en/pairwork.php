@@ -79,3 +79,4 @@ $string['enablereset'] ='Enable Reset';
 $string['enablereports'] ='Enable Reports';
 $string['enablereset_details'] ='';
 $string['enablereports_details'] ='';
+$string['userreport'] ='User Report';

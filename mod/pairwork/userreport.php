@@ -31,8 +31,9 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
 
-$id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // pairwork instance ID - it should be named as the first character of the module
+$id   = optional_param('id', 0, PARAM_INT); // course_module ID, or
+$n    = optional_param('n', 0, PARAM_INT);  // pairwork instance ID - it should be named as the first character of the module
+$sort = optional_param('sort', 'id ASC', PARAM_TEXT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('pairwork', $id, 0, false, MUST_EXIST);
@@ -46,13 +47,13 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
-$PAGE->set_url('/mod/pairwork/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/pairwork/userreport.php', array('id' => $cm->id));
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 //Diverge logging logic at Moodle 2.7
 if($CFG->version<2014051200){
-	add_to_log($course->id, 'pairwork', 'view', "view.php?id={$cm->id}", $moduleinstance->name, $cm->id);
+	add_to_log($course->id, 'pairwork', 'view', "userreport.php?id={$cm->id}", $moduleinstance->name, $cm->id);
 }else{
 	// Trigger module viewed event.
 	$event = \mod_pairwork\event\course_module_viewed::create(array(
@@ -117,7 +118,7 @@ $renderer = $PAGE->get_renderer('mod_pairwork');
 
 //if we are teacher we see tabs. If student we just see the quiz
 if(has_capability('mod/pairwork:preview',$modulecontext)){
-	echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', MOD_PAIRWORK_LANG));
+	echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('userreport', MOD_PAIRWORK_LANG));
 }else{
 	echo $renderer->notabsheader();
 }
@@ -132,14 +133,15 @@ if($moduleinstance->maxattempts > 0){
 	}
 }
 
+//Fetch users data
+
+$userdata= $DB->get_records('user',null,$sort);
+
 //This is specfic to our renderer
 
-echo $renderer->fetch_view_instructions();
-echo $renderer->fetch_view_buttons();
-
-if(has_capability('mod/pairwork:preview',$modulecontext)){
-	echo $renderer->fetch_view_userreport_button();
-}
+$displayopts= new stdClass();
+$displayopts->sort = $sort;
+echo $renderer->fetch_user_list($moduleinstance,$userdata, $displayopts);
 
 // Finish the page
 echo $renderer->footer();

@@ -196,6 +196,60 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 		}
 		return $html;
 	}
+
+	public function fetch_view_userreport_button() {
+		$userreport_url =   new moodle_url('/mod/pairwork/userreport.php',
+		array('id'=>$this->page->cm->id));
+		$html = $this->output->single_button($userreport_url,
+		        get_string('userreport',MOD_PAIRWORK_LANG));
+		return html_writer::div($html,MOD_PAIRWORK_CLASS . 'userreport_buttoncontainer');
+	}
+
+	public function fetch_user_list($moduleinstance, $userdata, $displayopts){
+		
+		//set up display fields
+		$fields = array('username','firstname','lastname','email');
+
+		//set up our table and head attributes
+		$tableattributes = array('class'=>'table table-striped usertable '. MOD_PAIRWORK_CLASS .'_table');
+		$headrow_attributes = array('class'=>'success ' . MOD_PAIRWORK_CLASS . '_userreport_headrow');
+
+		$htmltable = new html_table();
+		$htmltable->attributes = $tableattributes;
+
+		$htr = new html_table_row();
+		$htr->attributes = $headrow_attributes;
+
+		foreach($fields as $field){
+			
+			$cellurl = $this->page->url;
+			$usesort = $field . ' ASC';
+
+			if($displayopts->sort==$usesort){
+				$usesort = $field . ' DESC';
+			}
+			
+			$cellurl->params(array('sort'=>$usesort));
+			$htr->cells[]=new html_table_cell(html_writer::link($cellurl,get_string($field)));
+		}
+		$htmltable->data[]=$htr;
+		foreach($userdata as $row){
+			$htr = new html_table_row();
+			//set up descrption cell
+			$cells = array();
+			foreach($fields as $field){
+				$cell = new html_table_cell($row->{$field});
+				$cell->attributes= array('class'=>MOD_PAIRWORK_CLASS . '_userreport_cell_' . $field);
+				$htr->cells[] = $cell;
+		    }
+		    $htmltable->data[]=$htr;
+		}
+
+		$html = html_writer::table($htmltable);
+		
+		return $html;
+
+	}
   
 }
 
