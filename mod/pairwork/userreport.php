@@ -31,9 +31,11 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
 
-$id   = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n    = optional_param('n', 0, PARAM_INT);  // pairwork instance ID - it should be named as the first character of the module
-$sort = optional_param('sort', 'id ASC', PARAM_TEXT);
+$id          = optional_param('id', 0, PARAM_INT); // course_module ID, or
+$n           = optional_param('n', 0, PARAM_INT);  // pairwork instance ID - it should be named as the first character of the module
+$sort        = optional_param('sort', 'id ASC', PARAM_TEXT);
+$currentpage = optional_param('currentpage', 1, PARAM_INT);
+$perpage = 10;
 
 if ($id) {
     $cm         = get_coursemodule_from_id('pairwork', $id, 0, false, MUST_EXIST);
@@ -133,15 +135,26 @@ if($moduleinstance->maxattempts > 0){
 	}
 }
 
+//Counting total number of users
+$usercount = $DB->count_records('user');
+
+//Paging buttons rendering
+echo $renderer->fetch_userreport_buttons($usercount, $currentpage, $perpage, $sort);
+
 //Fetch users data
 
-$userdata= $DB->get_records('user',null,$sort);
+$limitfrom = $perpage*($currentpage-1);
+$userdata= $DB->get_records('user',null,$sort, '*', $limitfrom, $perpage);
 
 //This is specfic to our renderer
 
 $displayopts= new stdClass();
 $displayopts->sort = $sort;
+$displayopts->currentpage = $currentpage;
 echo $renderer->fetch_user_list($moduleinstance,$userdata, $displayopts);
+
+
+
 
 // Finish the page
 echo $renderer->footer();

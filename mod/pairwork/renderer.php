@@ -202,7 +202,7 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 		array('id'=>$this->page->cm->id));
 		$html = $this->output->single_button($userreport_url,
 		        get_string('userreport',MOD_PAIRWORK_LANG));
-		return html_writer::div($html,MOD_PAIRWORK_CLASS . 'userreport_buttoncontainer');
+		return html_writer::div($html,MOD_PAIRWORK_CLASS . '_userreport_buttoncontainer');
 	}
 
 	public function fetch_user_list($moduleinstance, $userdata, $displayopts){
@@ -228,7 +228,7 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 			if($displayopts->sort==$usesort){
 				$usesort = $field . ' DESC';
 			}
-			
+
 			$cellurl->params(array('sort'=>$usesort));
 			$htr->cells[]=new html_table_cell(html_writer::link($cellurl,get_string($field)));
 		}
@@ -249,6 +249,30 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 		
 		return $html;
 
+	}
+
+	public function fetch_userreport_buttons($usercount, $currentpage, $perpage, $sort) {
+
+		$hasnext = $usercount > $currentpage*$perpage;
+		$hasback = $currentpage > 1;
+
+		$html = '';
+		if ($hasback) {
+			$back_url =   new moodle_url('/mod/pairwork/userreport.php',
+			array('id'=>$this->page->cm->id, 'sort'=> $sort, 'currentpage'=>$currentpage-1));
+			$html = $this->output->single_button($back_url,
+					get_string('back'));
+		}
+
+
+		if ($hasnext) {
+			$next_url =   new moodle_url('/mod/pairwork/userreport.php',
+			array('id'=>$this->page->cm->id, 'sort'=> $sort, 'currentpage'=>$currentpage+1));
+			$html .= $this->output->single_button($next_url,
+					get_string('next'));
+		}
+
+		return html_writer::div($html,MOD_PAIRWORK_CLASS . '_userreport_buttoncontainer');
 	}
   
 }
