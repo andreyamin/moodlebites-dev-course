@@ -73,7 +73,11 @@ class mod_pairwork_mod_form extends moodleform_mod {
         $mform->addElement('text', 'someinstancesetting', get_string('someinstancesetting', MOD_PAIRWORK_LANG), array('size'=>'64'));
         $mform->addRule('someinstancesetting', null, 'required', null, 'client');
         $mform->setType('someinstancesetting', PARAM_TEXT);
-		
+
+        //Show/hide config
+        $mform->addElement('advcheckbox','showhide', get_string('showhide', MOD_PAIRWORK_LANG));
+		$mform->setDefault('showhide', 1);
+
 		//attempts
         $attemptoptions = array(0 => get_string('unlimited', MOD_PAIRWORK_LANG),
                             1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);

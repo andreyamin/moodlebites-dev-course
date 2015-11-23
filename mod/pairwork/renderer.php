@@ -172,10 +172,13 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 
 		if($displayopts->seepartnerpic==0){
 
+			if(!$moduleinstance->showhide){return '';}
+
 			$url = new moodle_url('/mod/pairwork/activity.php', array('id'=>$this->page->cm->id, 
-									'partnertype'=>$displayopts->partnertype,
-									'seepartnerpic'=>'1'));
+								'partnertype'=>$displayopts->partnertype,
+								'seepartnerpic'=>'1'));
 			$html = $this->output->single_button($url, 'See partner pic');
+
 		} else {
 
 			if($displayopts->partnertype=='a'){
@@ -193,7 +196,7 @@ class mod_pairwork_renderer extends plugin_renderer_base {
 					'partnertype'=>$myrole,
 					'seepartnerpic'=>'0'));
 			$html .= $this->output->single_button($url, 'Hide partner pic');
-		}
+					}
 		return $html;
 	}
 

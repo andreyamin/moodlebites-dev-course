@@ -80,3 +80,4 @@ $string['enablereports'] ='Enable Reports';
 $string['enablereset_details'] ='';
 $string['enablereports_details'] ='';
 $string['userreport'] ='User Report';
+$string['showhide'] ='Enable "Show Parner Pic Resource" button';
