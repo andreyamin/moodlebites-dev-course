@@ -22,7 +22,7 @@
  * if you like, and it can span multiple lines.
  *
  * @package    mod_pairwork
- * @copyright  2015 Andre Yamin andreyamin@gmail.com
+ * @copyright  2015 Flash Gordon http://www.flashgordon.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -133,7 +133,6 @@ if($moduleinstance->maxattempts > 0){
 }
 
 //This is specfic to our renderer
-
 echo $renderer->fetch_view_instructions();
 echo $renderer->fetch_view_buttons();
 

@@ -16,13 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of pairwork
+ * Prints the activity page of pairwork
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
  * @package    mod_pairwork
- * @copyright  2015 Andre Yamin andreyamin@gmail.com
+ * @copyright  2015 Flash Gordon http://www.flashgordon.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,9 +32,11 @@ require_once(dirname(__FILE__).'/lib.php');
 
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT); // pairwork instance ID - it should be named as the first character of the module
-$partnertype  = optional_param('partnertype', 'a', PARAM_TEXT);
-$seepartnerpic = optional_param('seepartnerpic', 0, PARAM_INT);
+$n  = optional_param('n', 0, PARAM_INT);  // pairwork instance ID - it should be named as the first character of the module
+$partnertype = optional_param('partnertype', 'a', PARAM_TEXT); // the partnertype
+$seepartnerpic = optional_param('seepartnerpic', 0, PARAM_INT); // see partners picture
+
+
 
 if ($id) {
     $cm         = get_coursemodule_from_id('pairwork', $id, 0, false, MUST_EXIST);
@@ -71,9 +73,6 @@ if($CFG->version<2014051200){
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-//are we a teacher or a student?
-$mode= "view";
-
 /// Set up the page header
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
@@ -104,44 +103,29 @@ $opts['someinstancesetting'] = $someinstancesetting;
 //this inits the M.mod_pairwork thingy, after the page has loaded.
 $PAGE->requires->js_init_call('M.mod_pairwork.helper.init', array($opts),false,$jsmodule);
 
-//this loads any external JS libraries we need to call
-//$PAGE->requires->js("/mod/pairwork/js/somejs.js");
-//$PAGE->requires->js(new moodle_url('http://www.somewhere.com/some.js'),true);
 
 //This puts all our display logic into the renderer.php file in this plugin
 //theme developers can override classes there, so it makes it customizable for others
 //to do it this way.
 $renderer = $PAGE->get_renderer('mod_pairwork');
 
-//From here we actually display the page.
-//this is core renderer stuff
-
-
 //if we are teacher we see tabs. If student we just see the quiz
+/*
 if(has_capability('mod/pairwork:preview',$modulecontext)){
 	echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', MOD_PAIRWORK_LANG));
 }else{
 	echo $renderer->notabsheader();
 }
-
-echo $renderer->show_intro($moduleinstance,$cm);
-
-//if we have too many attempts, lets report that.
-if($moduleinstance->maxattempts > 0){
-	$attempts =  $DB->get_records(MOD_PAIRWORK_USERTABLE,array('userid'=>$USER->id, MOD_PAIRWORK_MODNAME.'id'=>$moduleinstance->id));
-	if($attempts && count($attempts)<$moduleinstance->maxattempts){
-		echo get_string("exceededattempts",MOD_PAIRWORK_LANG,$moduleinstance->maxattempts);
-	}
-}
+*/
+echo $renderer->notabsheader();
 
 $displayopts = new stdClass();
 $displayopts->partnertype=$partnertype;
 $displayopts->seepartnerpic=$seepartnerpic;
-
-echo $renderer->fetch_activity_heading($moduleinstance,$displayopts);
+echo $renderer->fetch_activity_header($moduleinstance,$displayopts);
 echo $renderer->fetch_activity_instructions($moduleinstance,$displayopts);
 echo $renderer->fetch_activity_resource($moduleinstance,$displayopts);
-echo $renderer->fetch_activity_opresource($moduleinstance,$displayopts);
+echo $renderer->fetch_activity_buttons($moduleinstance,$displayopts);
 
 // Finish the page
 echo $renderer->footer();

@@ -22,7 +22,7 @@
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
  * @package    mod_pairwork
- * @copyright  2015 Andre Yamin andreyamin@gmail.com
+ * @copyright  2015 Flash Gordon http://www.flashgordon.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -73,11 +73,27 @@ class mod_pairwork_mod_form extends moodleform_mod {
         $mform->addElement('text', 'someinstancesetting', get_string('someinstancesetting', MOD_PAIRWORK_LANG), array('size'=>'64'));
         $mform->addRule('someinstancesetting', null, 'required', null, 'client');
         $mform->setType('someinstancesetting', PARAM_TEXT);
-
-        //Show/hide config
-        $mform->addElement('advcheckbox','showhide', get_string('showhide', MOD_PAIRWORK_LANG));
-		$mform->setDefault('showhide', 1);
-
+		
+		//new fields for Week 5
+		
+		
+		//display show/hide button to students 
+		$mform->addElement('advcheckbox', 'showhide', get_string('showhide', MOD_PAIRWORK_LANG));
+        $mform->setDefault('showhide', 1);
+        
+        //instructions a
+        $instructionoptions = array();
+        $mform->addElement('editor', 'instructionsa', get_string('instructionsa', MOD_PAIRWORK_LANG), null, $instructionoptions);
+        $mform->setType('instructionsa', PARAM_RAW);
+        $mform->addRule('instructionsa', get_string('required'), 'required', null, 'client');
+        $mform->setDefault('instructionsa', array('text'=>get_string('defaultinstructions', MOD_PAIRWORK_LANG),'format'=>1));
+        
+        //instructions b
+        $mform->addElement('editor', 'instructionsb', get_string('instructionsb', MOD_PAIRWORK_LANG), null, $instructionoptions);
+        $mform->setType('instructionsb', PARAM_RAW);
+        $mform->addRule('instructionsb', get_string('required'), 'required', null, 'client');
+        $mform->setDefault('instructionsb', array('text'=>get_string('defaultinstructions', MOD_PAIRWORK_LANG),'format'=>1));
+	
 		//attempts
         $attemptoptions = array(0 => get_string('unlimited', MOD_PAIRWORK_LANG),
                             1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);
@@ -126,4 +142,21 @@ class mod_pairwork_mod_form extends moodleform_mod {
 	function completion_rule_enabled($data) {
 		return ($data['mingrade']>0);
 	}
+	
+	function data_preprocessing(&$default_values) {
+        if ($this->current->instance) {
+			//instructionsa        	
+        	$default_values['instructionsa']=array(
+        		'format'=>$default_values['instructionsaformat'],
+        		'text'=>$default_values['instructionsa']
+        	);
+        	//instructionsb
+        	$default_values['instructionsb']=array(
+        		'format'=>$default_values['instructionsbformat'],
+        		'text'=>$default_values['instructionsb']
+        	);
+        }
+    }
+  
+    
 }

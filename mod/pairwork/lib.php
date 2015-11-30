@@ -25,7 +25,7 @@
  * Moodle is performing actions across all modules.
  *
  * @package    mod_pairwork
- * @copyright  2015 Andre Yamin andreyamin@gmail.com
+ * @copyright  2015 Flash Gordon http://www.flashgordon.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -391,8 +391,13 @@ function pairwork_add_instance(stdClass $pairwork, mod_pairwork_mod_form $mform 
     $pairwork->timecreated = time();
 
     # You may have to add extra stuff in here #
-
-    return $DB->insert_record(MOD_PAIRWORK_TABLE, $pairwork);
+    $instructionsa = $pairwork->instructionsa;
+    $instructionsb = $pairwork->instructionsb;
+	$pairwork->instructionsa =$instructionsa['text'];
+	$pairwork->instructionsaformat =$instructionsa['format'];
+	$pairwork->instructionsb =$instructionsb['text'];
+	$pairwork->instructionsbformat =$instructionsb['format'];
+    return $DB->insert_record(MOD_PAIRWORK_TABLE, $pairwork);  
 }
 
 /**
@@ -413,6 +418,12 @@ function pairwork_update_instance(stdClass $pairwork, mod_pairwork_mod_form $mfo
     $pairwork->id = $pairwork->instance;
 
     # You may have to add extra stuff in here #
+    $instructionsa = $pairwork->instructionsa;
+    $instructionsb = $pairwork->instructionsb;
+	$pairwork->instructionsa =$instructionsa['text'];
+	$pairwork->instructionsaformat =$instructionsa['format'];
+	$pairwork->instructionsb =$instructionsb['text'];
+	$pairwork->instructionsbformat =$instructionsb['format'];
 
     return $DB->update_record(MOD_PAIRWORK_TABLE, $pairwork);
 }
@@ -660,20 +671,14 @@ function pairwork_pluginfile($course, $cm, $context, $filearea, array $args, $fo
  */
 function pairwork_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
 
-    global $PAGE;
+	$view_url = new moodle_url('/mod/pairwork/view.php',array('id'=>$cm->id));
+	$view_node = $navref->add(get_string('view'), $view_url);
+	$config = get_config(MOD_PAIRWORK_FRANKY);
+	if($config->enablereports){
+		$report_url = new moodle_url('/mod/pairwork/reports.php',array('id'=>$cm->id));
+		$report_node = $navref->add(get_string('reports'),$report_url);
+	}
 
-    $enablereset = get_config(MOD_PAIRWORK_FRANKY,'enablereset');
-    $enablereports = get_config(MOD_PAIRWORK_FRANKY,'enablereports');
-
-    if ($enablereset == 1) {
-        $view_url = new moodle_url('/mod/pairwork/view.php',array('id'=>$cm->id));
-        $view_node = $navref->add(get_string('view'), $view_url);
-    }
-
-    if ($enablereports == 1) {
-        $report_url = new moodle_url('/mod/pairwork/reports.php',array('id'=>$cm->id));
-        $view_node = $navref->add(get_string('reports', MOD_PAIRWORK_LANG), $report_url);
-    }
 }
 
 /**
@@ -686,4 +691,13 @@ function pairwork_extend_navigation(navigation_node $navref, stdclass $course, s
  * @param navigation_node $pairworknode {@link navigation_node}
  */
 function pairwork_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $pairworknode=null) {
+	global $PAGE;
+	$config = get_config(MOD_PAIRWORK_FRANKY);
+	if($config->enablereset){
+		$reset_url = new moodle_url('/mod/pairwork/reset.php',array('id'=>$PAGE->cm->id));
+		$reset_node = $pairworknode->add(get_string('reset'), $reset_url);
+	}
+	
+	$rename_url = new moodle_url('/mod/pairwork/namechanger.php',array('courseid'=>$PAGE->cm->course));
+	$rename_node = $pairworknode->add(get_string('rename'), $rename_url);
 }
